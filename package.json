@@ -1,0 +1,30 @@
+{
+  "name": "clord",
+  "version": "1.0.0",
+  "description": "Discord bot for managin communities.",
+  "main": "target/main.js",
+  "dependencies": {
+    "source-map-support": "0.5.6",
+    "ws": "5.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thought-work/clord.git"
+  },
+  "keywords": [
+    "ClojureScript",
+    "Discord",
+    "Bot",
+    "JS"
+  ],
+  "author": "ThoughtWork",
+  "license": "GNU AGPLv3",
+  "bugs": {
+    "url": "https://github.com/thought-work/clord/issues"
+  },
+  "homepage": "https://github.com/thought-work/clord#readme"
+}
