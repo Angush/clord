@@ -1,11 +1,12 @@
-(ns server.main)
-(def value-a 1)
-
-(defonce value-b 2)
+(ns server.main
+  (:require [server.repository :as repository]))
 
 (defn reload! []
-      (println "Code updated.")
-      (println "Trying values:" value-a value-b))
+      (do
+        (println "Code updated!")
+        (println (repository/add-user))))
 
 (defn main! []
-      (println "App loaded!"))
+      (do
+        (println "App loaded!")
+        (println (repository/get-users))))
