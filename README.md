@@ -27,3 +27,6 @@ After the watcher is running, go to another terminal window and run:
 ```bash
 npm run start
 ```
+### Credits
+
+The blacklist is a modified version of the list found [here](https://github.com/words/profanities)
