@@ -10,6 +10,18 @@
     :command "hello"
     :exec    (fn [msg-obj] (.reply msg-obj "world"))
     }
+   {
+    :command ".addterm"
+    :exec    (fn [msg-obj] (.reply msg-obj "Adding word to blacklist..."))
+    }
+   {
+    :command ".listterms"
+    :exec    (fn [msg-obj] (.reply msg-obj "Removing word from blacklist..."))
+    }
+   {
+    :command ".deleteterm"
+    :exec    (fn [msg-obj] (.reply msg-obj "Sending you a pm containing the blacklist..."))
+    }
    ]
   )
 
