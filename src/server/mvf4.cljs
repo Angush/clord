@@ -1,11 +1,15 @@
-(ns server.mvf4)
+(ns server.mvf4
+  (:require [server.repository :as repo]))
 
-; TODO
-; Find the user and format the rap-sheet to
-; match this structure
+(def punishment-levels [:warning :kick :temp-ban :perm-ban])
+
 (defn get-user-rapsheet
   [user-id]
-  {:warning 3 :kick 3 :temp-ban 3 :perm-ban 0})
+  (let [user (repo/get-user-rap-by-id user-id)]
+    (reduce
+      #(assoc %1 %2 (or (%2 user) 0))
+      {}
+      punishment-levels)))
 
 (def punishment-config {
                         :warning  3
@@ -13,8 +17,6 @@
                         :temp-ban 3
                         :perm-ban 1
                         })
-
-(def punishment-levels [:warning :kick :temp-ban :perm-ban])
 
 (defn find-punishment
   ([rap-sheet config]
@@ -29,18 +31,19 @@
 ; Write discord actions
 (def punishments
   {
-   :warning  (fn [msg-obj] (.reply msg-obj "You have been warned"))
-   :kick     (fn [msg-obj] (.reply msg-obj "You have been kicked"))
-   :temp-ban (fn [msg-obj] (.reply msg-obj "You have been banned temporarily"))
-   :perm-ban (fn [msg-obj] (.reply msg-obj "You have been banned permanently"))
+   :warning  (fn [msg-obj] (.send (aget msg-obj "author") "You have been warned"))
+   :kick     (fn [msg-obj] (.send (aget msg-obj "author") "You have been kicked"))
+   :temp-ban (fn [msg-obj] (.send (aget msg-obj "author") "You have been banned temporarily"))
+   :perm-ban (fn [msg-obj] (.send (aget msg-obj "author") "You have been banned permanently"))
    })
 
 (defn
   punish
   [msg-obj]
-  (let [rap-sheet (get-user-rapsheet "id")
+  (let [user-id (aget msg-obj "author" "id")
+        rap-sheet (get-user-rapsheet user-id)
         punishment-k (find-punishment rap-sheet punishment-config)
         punishment (get punishments punishment-k)]
     (do
-      (println "update rap sheet value " punishment-k)
+      (repo/update-user-rapsheet user-id punishment-k (inc (punishment-k rap-sheet)))
       (punishment msg-obj))))
