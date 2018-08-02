@@ -5,7 +5,7 @@
             [server.MVF_1_v2 :refer [get_msg_info]]))
 
 ; Discord configuration
-(def token "NDc0MzMxMDkyNzI0NDgyMDY5.DkO8Mw.Uj1QI1YrQCZ8zOo9Rt3o2nNvSyc")
+(def token "")
 (def discord-client (new discord/Client))
 
 ; Discord client event listeners
