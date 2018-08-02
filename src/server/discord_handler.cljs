@@ -20,7 +20,7 @@
     }
    {
     :command ".listterms"
-    :exec    (fn [msg-obj] (.reply msg-obj "Sending you a pm containing the blacklist..."))
+    :exec    (fn [msg-obj] (.reply msg-obj "Dumping the blacklist..."))
     }
    ]
   )
