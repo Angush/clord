@@ -17,4 +17,4 @@
 
 (defn view_terms
       []
-      (println "Sending you a PM containing the blacklist"))
+      (println "Dumping blacklist"))
