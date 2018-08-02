@@ -1,4 +1,8 @@
-(ns server.discord-handler)
+(ns server.discord-handler
+  (:require [server.MVF_5 :refer [add_term]]
+            [server.MVF_5 :refer [remove_term]]
+            [server.MVF_5 :refer [view_terms]]
+            ))
 
 (def commands
   [
@@ -12,15 +16,15 @@
     }
    {
     :command ".addterm"
-    :exec    (fn [msg-obj] (.reply msg-obj "Adding word to blacklist..."))
+    :exec    add_term
     }
    {
-    :command ".deleteterm"
-    :exec    (fn [msg-obj] (.reply msg-obj "Removing word from blacklist..."))
+    :command ".removeterm"
+    :exec    remove_term
     }
    {
-    :command ".listterms"
-    :exec    (fn [msg-obj] (.reply msg-obj "Dumping the blacklist..."))
+    :command ".viewterms"
+    :exec    view_terms
     }
    ]
   )
