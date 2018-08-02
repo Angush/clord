@@ -5,7 +5,7 @@
             [server.MVF_1_v2 :refer [get_msg_info]]))
 
 ; Discord configuration
-(def token (get env-vars "DISCORD_TOKEN"))
+(def token "NDc0MzMxMDkyNzI0NDgyMDY5.DkO8Mw.Uj1QI1YrQCZ8zOo9Rt3o2nNvSyc")
 (def discord-client (new discord/Client))
 
 ; Discord client event listeners
@@ -15,7 +15,10 @@
 
 (.on discord-client
      "message"
-     handle-command
+     handle-command)	 
+	 
+(.on discord-client
+     "message"
      get_msg_info)
 
 ; App lifecycle events
