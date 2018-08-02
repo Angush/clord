@@ -6,13 +6,13 @@
 
 
 (defn add_term
-      [term]
-      (println "Adding " term " to blacklist"))
+      []
+      (println "Adding to blacklist"))
 
 
 (defn remove_term
-      [term]
-      (println "Removing " term " from blacklist"))
+      []
+      (println "Removing from blacklist"))
 
 
 (defn view_terms
