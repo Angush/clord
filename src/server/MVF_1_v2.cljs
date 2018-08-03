@@ -1,24 +1,21 @@
 (ns server.MVF_1_v2
   (:require [clojure.string :as str]
             [clojure.set :as set]
-    )
-  )
+            ["fs" :as fs]
+            ))
+
+; I canabalised this from repository.cljs, I might move this to repository later.
+(defn read_blacklist
+  []
+  (def filename "src/blacklist.json")
+  (js->clj (.parse js/JSON (fs/readFileSync filename "utf8")) :keywordize-keys true))
 
 
 (defn mvf_1
   [msg channel_id msg_id content author]
 
-  ; TODO:
-  ; Read blacklist from file and convert to set
-
-  ; Load blacklist, convert to set
-  ;(def read_blacklist (slurp "../blacklist.json"))
-
-  ; Debug print
-  ;(println (type read_blacklist))
-
-  ; Hardcoded until I know how to properly read json from file
-  (def blacklist (into #{} (list "bitch" "cunt" "fuck" "shit")))
+  ; Load blacklist and convert to set
+  (def blacklist (into #{} (read_blacklist)))
 
   ; Get lowercase of message - can probably do this in get_msg_info
   (def lower_content (str/lower-case content))
@@ -36,20 +33,17 @@
 
   ; Get result of intersection of blacklist and msg words sets
   (if-not (empty?(set/intersection blacklist msg_words))
-  
     (println "The message has bad words")
-    ; TODO
-    ; Remove message
-  
-    ; TODO
+
     ;Post warning message
     ;(.reply msg " wash your mouth out with soap! We don't use that kind of language here.")
-  
+
     ; TODO
-    ; Call auto punishment mvf
-  
-    )
-  )
+    ; Remove message
+
+    ; TODO
+    ; Call auto punishment
+    ))
 
 
 (defn get_msg_info
@@ -63,10 +57,4 @@
   (def content (aget msg "content"))
   (def author (aget msg "author"))
 
-  (mvf_1 msg channel_id msg_id content author)
-  )
-
-
-; TODO Bot permissions:
-; 'MANAGE_MESSAGES'
-; 'SEND_MESSAGES'
+  (mvf_1 msg channel_id msg_id content author))
