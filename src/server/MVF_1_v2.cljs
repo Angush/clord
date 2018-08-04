@@ -1,21 +1,14 @@
 (ns server.MVF_1_v2
   (:require [clojure.string :as str]
             [clojure.set :as set]
-            ["fs" :as fs]
+            [server.repository :as repo]
             ))
-
-; I canabalised this from repository.cljs, I might move this to repository later.
-(defn read_blacklist
-  []
-  (def filename "src/blacklist.json")
-  (js->clj (.parse js/JSON (fs/readFileSync filename "utf8")) :keywordize-keys true))
-
 
 (defn mvf_1
   [msg channel_id msg_id content author]
 
   ; Load blacklist and convert to set
-  (def blacklist (into #{} (read_blacklist)))
+  (def blacklist (into #{} (repo/read_blacklist)))
 
   ; Get lowercase of message - can probably do this in get_msg_info
   (def lower_content (str/lower-case content))
@@ -44,7 +37,6 @@
     ; TODO
     ; Call auto punishment
     ))
-
 
 (defn get_msg_info
   "This function accepts msg object from discord and gets the message ID, channel ID,
