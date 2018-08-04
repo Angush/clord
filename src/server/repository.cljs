@@ -2,10 +2,18 @@
   (:require ["fs" :as fs]))
 
 (def filename "../src/db.json")
+(def blacklist "src/blacklist.json")
 
 (defn read-db
       []
       (js->clj (.parse js/JSON (fs/readFileSync filename "utf8")) :keywordize-keys true))
+
+
+(defn read_blacklist
+      []
+      (js->clj (.parse js/JSON (fs/readFileSync blacklist "utf8")) :keywordize-keys true))
+
+
 
 (defn write-data
       "Write data to the DB file. This function assumes next-state contains
