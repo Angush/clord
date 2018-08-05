@@ -31,7 +31,7 @@
 ; Write discord actions
 (def punishments
   {
-   :warning  (fn [msg-obj] (.send (aget msg-obj "author") "You have been warned"))
+   :warning  (fn [msg-obj] (.reply msg-obj " wash your mouth out with soap! We don't use that kind of language here."))
    :kick     (fn [msg-obj] (.send (aget msg-obj "author") "You have been kicked"))
    :temp-ban (fn [msg-obj] (.send (aget msg-obj "author") "You have been banned temporarily"))
    :perm-ban (fn [msg-obj] (.send (aget msg-obj "author") "You have been banned permanently"))
