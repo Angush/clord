@@ -12,8 +12,20 @@
     :exec    punish                                         ; The use case is the function to execute
     }
    {
-    :command "hello"
-    :exec    (fn [msg-obj] (.reply msg-obj "world"))
+    :command ".rapsheet"
+    :exec    rapsheet
+    }
+   {
+    :command ".addterm"
+    :exec    add_term
+    }
+   {
+    :command ".removeterm"
+    :exec    remove_term
+    }
+   {
+    :command ".viewterms"
+    :exec    view_terms
     }
    {
     :command ".rapsheet"
