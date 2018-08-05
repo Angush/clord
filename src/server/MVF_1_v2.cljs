@@ -4,17 +4,15 @@
             [server.repository :as repo]
             ))
 
+
 (defn mvf_1
-  [msg channel_id msg_id content author]
+  [msg content]
 
   ; Load blacklist and convert to set
   (def blacklist (into #{} (repo/read_blacklist)))
 
-  ; Get lowercase of message - can probably do this in get_msg_info
-  (def lower_content (str/lower-case content))
-
   ; Split message into individual words, convert to set
-  (def msg_words (into #{}(str/split lower_content #"\s")))
+  (def msg_words (into #{}(str/split content #"\s")))
 
   ; Debug prints
   ;(println (type blacklist) blacklist)
@@ -26,10 +24,8 @@
 
   ; Get result of intersection of blacklist and msg words sets
   (if-not (empty?(set/intersection blacklist msg_words))
-    (println "The message has bad words")
-
-    ;Post warning message
-    ;(.reply msg " wash your mouth out with soap! We don't use that kind of language here.")
+    ; Post warning message
+    (.reply msg " wash your mouth out with soap! We don't use that kind of language here.")
 
     ; TODO
     ; Remove message
@@ -38,15 +34,20 @@
     ; Call auto punishment
     ))
 
+
 (defn get_msg_info
   "This function accepts msg object from discord and gets the message ID, channel ID,
    author, and message content. It then passes this info to mvf_1"
 
   [msg]
 
-  (def channel_id (aget msg "channel"))
-  (def msg_id (aget msg "id"))
-  (def content (aget msg "content"))
+  (def content (str/lower-case (aget msg "content")))
   (def author (aget msg "author"))
 
-  (mvf_1 msg channel_id msg_id content author))
+  ; Check message content if the author isn't Clord
+  ; I'll make <bot id> an env setting or something later.
+  (def result (re-matches #"<bot id>" (aget msg "author" "id")))
+  ;(println "result" result)
+
+  (if-not (= result "<bot id>")
+    (mvf_1 msg content)))
