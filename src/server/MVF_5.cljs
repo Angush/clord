@@ -59,8 +59,8 @@
       ; Reply with success message
       (.reply msg "the blacklist has been updated!"))
 
-      ; Term not blacklisted
-      (.reply msg "that word is not currently blacklisted.")))
+    ; Term not blacklisted
+    (.reply msg "that word is not currently blacklisted.")))
 
 
 (defn view_terms
