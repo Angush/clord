@@ -1,5 +1,6 @@
 (ns server.discord-handler
-  (:require [server.MVF_5 :refer [add_term]]
+  (:require [server.mvf4 :refer [punish]]
+            [server.MVF_5 :refer [add_term]]
             [server.MVF_5 :refer [remove_term]]
             [server.MVF_5 :refer [view_terms]]))
 
@@ -7,7 +8,7 @@
   [
    {
     :command "ping"                                         ; This string is the command to match
-    :exec    (fn [msg-obj] (.reply msg-obj "pong"))         ; The use case is the function to execute
+    :exec    punish                                         ; The use case is the function to execute
     }
    {
     :command "hello"
