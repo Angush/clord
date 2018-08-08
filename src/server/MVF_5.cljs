@@ -27,7 +27,7 @@
         ; Term not blacklisted
         (do
           ; Add term to blacklist and sort alphabetically before writing file
-          (repo/write-data (sort(conj blacklist new_term)))
+          (repo/write-blacklist (sort(conj blacklist new_term)))
           ; Reply with success message
           (.reply msg "the blacklist has been updated!"))
         ; Term already blacklisted
@@ -59,7 +59,7 @@
         ; Term blacklisted
         (do
           ; Remove term from blacklist and sort alphabetically before writing file
-          (repo/write-data (sort (disj blacklist old_term)))
+          (repo/write-blacklist (sort (disj blacklist old_term)))
           ; Reply with success message
           (.reply msg "the blacklist has been updated!"))
         ; Term not blacklisted
