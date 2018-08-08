@@ -14,7 +14,7 @@
 
 (.on discord-client
      "message"
-     handle-command)
+     (partial handle-command discord-client))
 
 ; App lifecycle events
 (defn reload! []
