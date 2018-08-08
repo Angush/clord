@@ -17,7 +17,7 @@
 (defn find-command
   [str]
   (->>
-    (filter #(= (:command %) str) commands)
+    (filter #(= (:command %) (.toLowerCase (first (.split str " ")))) commands)
     first))
 
 (defn handle-command
