@@ -1,5 +1,8 @@
 (ns server.discord-handler
-  (:require [server.mvf4 :refer [punish]]))
+  (:require [server.mvf4 :refer [punish]]
+            [server.MVF_5 :refer [add_term]]
+            [server.MVF_5 :refer [remove_term]]
+            [server.MVF_5 :refer [view_terms]]))
 
 (def commands
   [
@@ -10,6 +13,18 @@
    {
     :command "hello"
     :exec    (fn [msg-obj] (.reply msg-obj "world"))
+    }
+   {
+    :command ".addterm"
+    :exec    (fn [msg-obj] (add_term msg-obj))
+    }
+   {
+    :command ".removeterm"
+    :exec    (fn [msg-obj] (remove_term msg-obj))
+    }
+   {
+    :command ".viewterms"
+    :exec    (fn [msg-obj] (view_terms msg-obj))
     }
    ]
   )
@@ -26,6 +41,6 @@
   [msg]
   (let [msg-content (aget msg "content")
         command (find-command msg-content)]
-    (if (nil? command)
-      msg
-      ((:exec command) msg))))
+       (if (nil? command)
+         msg
+         ((:exec command) msg))))
