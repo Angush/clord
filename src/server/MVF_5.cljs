@@ -8,7 +8,7 @@
 (defn add_term
   "When called with '.addterm =<term>' this function will add the given <term> to
    the blacklist if it's not currently blacklisted"
-  [msg]
+  [bot msg]
 
   ; Load blacklist
   (def blacklist (into #{} (repo/read_blacklist)))
@@ -40,7 +40,7 @@
 (defn remove_term
   "When called with '.removeterm =<term>' this function will remove the given <term>
   from the blacklist if it's currently blacklisted"
-  [msg]
+  [bot msg]
 
   ;Load blacklist
   (def blacklist (into #{} (repo/read_blacklist)))
@@ -71,7 +71,7 @@
 
 (defn view_terms
   "Sends a message containing the blacklist as a reply to .viewterms"
-  [msg]
+  [bot msg]
 
   ; Load blacklist
   (def blacklist (sort(into #{} (repo/read_blacklist))))
