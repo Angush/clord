@@ -1,9 +1,11 @@
 (ns server.MVF_1_v2
   (:require [clojure.string :as str]
             [clojure.set :as set]
+            [server.environment :refer [env-vars]]
             [server.repository :as repo]
-            ))
+            [server.mvf4 :as mvf4]))
 
+(def bot_id (get env-vars "BOT_CLIENT_ID"))
 
 (defn mvf_1
   [msg content]
@@ -14,25 +16,13 @@
   ; Split message into individual words, convert to set
   (def msg_words (into #{}(str/split content #"\s")))
 
-  ; Debug prints
-  ;(println (type blacklist) blacklist)
-  ;(println (type msg_words) msg_words)
-
-  ; Test var + debug print
-  ;(def has_bad_words (empty?(set/intersection blacklist msg_words)) )
-  ;(println has_bad_words)
-
   ; Get result of intersection of blacklist and msg words sets
   (if-not (empty?(set/intersection blacklist msg_words))
-    ; Post warning message
-    (.reply msg " wash your mouth out with soap! We don't use that kind of language here.")
-
-    ; TODO
-    ; Remove message
-
-    ; TODO
-    ; Call auto punishment
-    ))
+    (do
+      ; Remove message
+      (.delete msg)
+      ; Call auto punishment module
+      (mvf4/punish msg))))
 
 
 (defn get_msg_info
@@ -42,12 +32,9 @@
   [msg]
 
   (def content (str/lower-case (aget msg "content")))
-  (def author (aget msg "author"))
 
   ; Check message content if the author isn't Clord
-  ; I'll make <bot id> an env setting or something later.
-  (def result (re-matches #"<bot id>" (aget msg "author" "id")))
-  ;(println "result" result)
+  (def result (re-matches (re-pattern bot_id) (aget msg "author" "id")))
 
-  (if-not (= result "<bot id>")
+  (if-not (= result bot_id)
     (mvf_1 msg content)))
