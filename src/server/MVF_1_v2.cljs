@@ -7,7 +7,7 @@
 
 (def bot_id (get env-vars "BOT_CLIENT_ID"))
 
-(defn mvf_1
+(defn check_msg
   [msg content]
 
   ; Load blacklist and convert to set
@@ -24,8 +24,7 @@
       ; Call auto punishment module
       (mvf4/punish msg))))
 
-
-(defn get_msg_info
+(defn mvf_1
   "This function accepts msg object from discord and gets the message ID, channel ID,
    author, and message content. It then passes this info to mvf_1"
 
@@ -33,8 +32,10 @@
 
   (def content (str/lower-case (aget msg "content")))
 
-  ; Check message content if the author isn't Clord
+  ; Check message content if the author isn't Clord and the first word isn't .addterm or .removeterm
   (def result (re-matches (re-pattern bot_id) (aget msg "author" "id")))
-
+  (def cmdcheck (empty? (re-find #"^(\.addterm\S?|\.removeterm\S?)" content)))
+  
   (if-not (= result bot_id)
-    (mvf_1 msg content)))
+	  (if cmdcheck
+      (check_msg msg content))))
