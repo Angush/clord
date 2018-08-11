@@ -3,6 +3,7 @@
 ## Dependencies
 - *shadow-cljs*: This application uses shadow-cljs to run. [Go to Docs.](http://shadow-cljs.org/)
 - *Node & NPM*: You need node and NPM running. (LTS version recommended) [Go to Docs](https://nodejs.org/en/)
+- *Discord 2FA*: Clord makes use of permissions that may require the bot owner have 2FA enabled on their Discord account. [Go to Docs](https://discordapp.com/developers/docs/topics/oauth2#twofactor-authentication-requirement)
 
 ## Environment Variables
 - *DISCORD_TOKEN*: This is the token we use to connect to the discord app. [Go to docs](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
