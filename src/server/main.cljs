@@ -2,7 +2,7 @@
   (:require ["discord.js" :as discord]
             [server.discord-handler :refer [handle-command]]
             [server.environment :refer [env-vars]]
-            [server.MVF_1_v2 :refer [get_msg_info]]))
+            [server.MVF_1_v2 :refer [mvf_1]]))
 
 ; Discord configuration
 (def token (get env-vars "DISCORD_TOKEN"))
@@ -15,11 +15,11 @@
 
 (.on discord-client
      "message"
-     handle-command)
+     (partial handle-command discord-client))
 
 (.on discord-client
      "message"
-     get_msg_info)
+     mvf_1)
 
 ; App lifecycle events
 (defn reload! []
