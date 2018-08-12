@@ -1,12 +1,4 @@
 {
-  "users": [
-    {
-      "name": "Daniel"
-    },
-    {
-      "name": "Angus"
-    }
-  ],
   "rapsheet": {
     "425483417048711170": {
       "warning": 3,
