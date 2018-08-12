@@ -44,25 +44,27 @@
   [bot msg]
 
   ;Load blacklist
-  (def blacklist (into #{} (repo/read_blacklist)))
+  (def blacklist_b (into #{} (repo/read_blacklist)))
 
   ; Get content from msg
-  (def content (re-find #" \S+" (str/lower-case (aget msg "content"))))
+  (def content_b (re-find #" \S+" (str/lower-case (aget msg "content"))))
 
-  (if (some? content)
+  (if (some? content_b)
     ; If command is properly formatted
     (do
       ; Strip old term down to word only
-      (def old_term (str/replace content #" " ""))
+      (def old_term (str/replace content_b #" " ""))
 
       ; Check if term is blacklist
-      (if (contains? blacklist old_term)
+      (if (contains? blacklist_b old_term)
         ; Term blacklisted
         (do
           ; Remove term from blacklist and sort alphabetically before writing file
-          (repo/write-blacklist (sort (disj blacklist old_term)))
+          (repo/write-blacklist (sort (disj blacklist_b old_term)))
+          
           ; Reply with success message
           (.reply msg "the blacklist has been updated!"))
+       
         ; Term not blacklisted
         (.reply msg "that word is not currently blacklisted.")))
 
@@ -74,7 +76,7 @@
   [bot msg]
 
   ; Load blacklist
-  (def blacklist (sort(into #{} (repo/read_blacklist))))
+  (def blacklist_c (sort(into #{} (repo/read_blacklist))))
 
   ; Send reply containing blacklist
-  (.reply msg (gstring/format "Here is the blacklist: ```%s```" blacklist)))
+  (.reply msg (gstring/format "Here is the blacklist: ```%s```" blacklist_c)))
