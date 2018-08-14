@@ -47,7 +47,7 @@
 
 (defn
   punish
-  [bot-obj msg-obj]
+  [msg-obj]
   (let [user-id (aget msg-obj "author" "id")
         rap-sheet (get-user-rapsheet user-id)
         punishment-k (find-punishment rap-sheet punishment-config)
