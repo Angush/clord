@@ -1,7 +1,7 @@
 (ns server.mvf4
   (:require [server.repository :as repo]))
 
-(def punishment-levels [:warning :kick :temp-ban :perm-ban])
+(def punishment-levels [:warning :kick :perm-ban])
 
 (defn get-user-rapsheet
   [user-id]
@@ -13,8 +13,7 @@
 
 (def punishment-config {
                         :warning  3
-                        :kick     3
-                        :temp-ban 3
+                        :kick 3
                         :perm-ban 1
                         })
 
@@ -27,14 +26,23 @@
        level-k
        (recur (inc level) rap-sheet config)))))
 
-; TODO
-; Write discord actions
+(defn ban
+  [msg-obj]
+  (let [guild (aget msg-obj "guild")
+        user-id (aget msg-obj "author" "id")]
+    (.ban guild user-id)))
+
+(defn kick
+  [msg-obj]
+  (let [guild (aget msg-obj "guild")
+        user-id (aget msg-obj "author" "id")]
+    (.kick guild user-id )))
+
 (def punishments
   {
-   :warning  (fn [msg-obj] (.send (aget msg-obj "author") "You have been warned"))
-   :kick     (fn [msg-obj] (.send (aget msg-obj "author") "You have been kicked"))
-   :temp-ban (fn [msg-obj] (.send (aget msg-obj "author") "You have been banned temporarily"))
-   :perm-ban (fn [msg-obj] (.send (aget msg-obj "author") "You have been banned permanently"))
+   :warning  (fn [msg-obj] (.reply msg-obj " wash your mouth out with soap! We don't use that kind of language here."))
+   :kick kick
+   :perm-ban ban
    })
 
 (defn
