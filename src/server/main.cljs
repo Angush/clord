@@ -15,7 +15,7 @@
 
 (.on discord-client
      "message"
-     (partial handle-command discord-client))
+     handle-command)
 
 (.on discord-client
      "message"
