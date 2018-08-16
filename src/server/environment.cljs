@@ -44,4 +44,12 @@
           (do 
             (println (str "The log channel you specified in my .env file (if you DID specify one) does not seem to exist on the '" guild-name "' server!"))
             false)
-          true)))))))
+          (let [channel (.get guild-channels log-channel-id)
+                perms (.permissionsFor channel user)
+                bot-can-view (.has perms "VIEW_CHANNEL")
+                bot-can-send (.has perms "SEND_MESSAGES")]
+            (if-not (and bot-can-view bot-can-send)
+              (do
+                (println (str "I do not seem to have read and send permissions for the log channel you specified in my .env file (#" (aget channel "name") "). I won't be able to alert you!"))
+                false)
+              true)))))))))
