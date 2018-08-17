@@ -18,13 +18,15 @@
             msg-created-at (aget msg "createdAt")
             member-color (aget member "displayHexColor")
             member-tag (aget msg-author "tag")
-            member-avatar (aget msg-author "displayAvatarURL")]
+            member-avatar (aget msg-author "displayAvatarURL")
+            mod-role-id (get env-vars "MOD_ROLE_ID")
+            mod-role (.get (aget guild "roles") mod-role-id)]
         (.setTitle embed "FLAGGED MESSAGE")
         (.setTimestamp embed msg-created-at)
         (.setColor embed member-color)
         (.setFooter embed member-tag member-avatar)
         (.setDescription embed msg-content)
-        (.send channel (str "**ALERT:** " user " flagged a message by " member " in " msg-channel "!") embed)))
+        (.send channel (str "**ALERT:** " user " flagged a message by " member " in " msg-channel "! " mod-role) embed)))
       (println (str "Channel with ID '" channel-id "' not found, so I cannot post the alert. Please add a correct channel ID to my .env file and reboot me.")))))
 
 (defn handle-reaction
