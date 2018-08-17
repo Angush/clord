@@ -12,7 +12,9 @@
   "devDependencies": {},
   "scripts": {
     "test": "test",
-    "start": "node target/main.js"
+    "start": "node target/main.js",
+    "repl": "shadow-cljs cljs-repl app",
+    "watch": "shadow-cljs watch app"
   },
   "repository": {
     "type": "git",

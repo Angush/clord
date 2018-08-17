@@ -12,8 +12,20 @@
     :exec    punish                                         ; The use case is the function to execute
     }
    {
-    :command "hello"
-    :exec    (fn [msg-obj] (.reply msg-obj "world"))
+    :command ".rapsheet"
+    :exec    rapsheet
+    }
+   {
+    :command ".addterm"
+    :exec    add_term
+    }
+   {
+    :command ".removeterm"
+    :exec    remove_term
+    }
+   {
+    :command ".viewterms"
+    :exec    view_terms
     }
    {
     :command ".rapsheet"
@@ -43,9 +55,9 @@
 (defn handle-command
   "This function checks the message and when it matches a
   command it executes a function provided"
-  [bot msg]
+  [msg]
   (let [msg-content (aget msg "content")
         command (find-command msg-content)]
        (if (nil? command)
          msg
-         ((:exec command) bot msg))))
+         ((:exec command) msg))))

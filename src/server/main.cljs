@@ -3,7 +3,8 @@
             [server.discord-handler :refer [handle-command]]
             [server.environment :refer [env-vars]]
             [server.message-flagging :refer [check-reaction]]
-            [server.environment :refer [validate-env-vars]]))
+            [server.environment :refer [validate-env-vars]]
+            [server.MVF_1_v2 :refer [mvf_1]]))
 
 ; Discord configuration
 (def token (get env-vars "DISCORD_TOKEN"))
@@ -16,7 +17,11 @@
 
 (.on discord-client
      "message"
-     (partial handle-command discord-client))
+     handle-command)
+
+(.on discord-client
+     "message"
+     mvf_1)
 
 (.on discord-client
      "messageReactionAdd"
