@@ -3,10 +3,10 @@
 
 (defn check-perms
   "Returns true if user has the designated Mods role. Returns false if they don't, UNLESS the command is '.rapsheet me', in which case, returns true, as this does not require Mod access."
-  [msg]
+  [msg, specific-member]
   (let [guild-owner-id (aget msg "guild" "owner" "id")
         mod-role-id (get env-vars "MOD_ROLE_ID")
-        member (aget msg "member")
+        member (if (nil? specific-member) (aget msg "member") specific-member)
         member-id (aget member "id")
         member-roles (aget member "roles")
         member-has-mod-role (.has member-roles mod-role-id)]

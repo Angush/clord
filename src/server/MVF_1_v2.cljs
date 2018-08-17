@@ -16,12 +16,13 @@
   (def msg_words (into #{} (str/split content #"\s")))
 
   ; Get result of intersection of blacklist and msg words sets
-  (if-not (empty? (set/intersection blacklist msg_words))
-    (do
-      ; Remove message
-      (.delete msg)
-      ; Call auto punishment module
-      (mvf4/punish msg))))
+  (let [used-terms (set/intersection blacklist msg_words)]
+    (if-not (empty? used-terms)
+      (do
+        ; Remove message
+        (.delete msg)
+        ; Call auto punishment module
+        (mvf4/punish msg (str "Used the banned term(s): " (str/join "; " used-terms) "."))))))
 
 (defn mvf_1
   "This function accepts msg object from discord and gets the message ID, channel ID, author, and message content. It then passes this info to mvf_1"
@@ -31,5 +32,5 @@
   (def content (str/lower-case (aget msg "content")))
 
   (if-not (= (aget bot "user" "id") (aget msg "author" "id"))
-    (if-not (check-perms msg)
+    (if-not (partial check-perms msg)
       (check_msg msg content bot))))
