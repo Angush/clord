@@ -3,21 +3,20 @@
             [clojure.set :as set]
             [server.environment :refer [env-vars]]
             [server.repository :as repo]
-            [server.mvf4 :as mvf4]))
-
-(def bot_id (get env-vars "BOT_CLIENT_ID"))
+            [server.mvf4 :as mvf4]
+            [server.permissions :refer [check-perms]]))
 
 (defn check_msg
-  [msg content]
+  [msg, content, bot]
 
   ; Load blacklist and convert to set
   (def blacklist (into #{} (repo/read_blacklist)))
 
   ; Split message into individual words, convert to set
-  (def msg_words (into #{}(str/split content #"\s")))
+  (def msg_words (into #{} (str/split content #"\s")))
 
   ; Get result of intersection of blacklist and msg words sets
-  (if-not (empty?(set/intersection blacklist msg_words))
+  (if-not (empty? (set/intersection blacklist msg_words))
     (do
       ; Remove message
       (.delete msg)
@@ -25,17 +24,12 @@
       (mvf4/punish msg))))
 
 (defn mvf_1
-  "This function accepts msg object from discord and gets the message ID, channel ID,
-   author, and message content. It then passes this info to mvf_1"
+  "This function accepts msg object from discord and gets the message ID, channel ID, author, and message content. It then passes this info to mvf_1"
 
-  [msg]
+  [msg, bot]
 
   (def content (str/lower-case (aget msg "content")))
 
-  ; Check message content if the author isn't Clord and the first word isn't .addterm or .removeterm
-  (def result (re-matches (re-pattern bot_id) (aget msg "author" "id")))
-  (def cmdcheck (empty? (re-find #"^(\.addterm\S?|\.removeterm\S?)" content)))
-  
-  (if-not (= result bot_id)
-	  (if cmdcheck
-      (check_msg msg content))))
+  (if-not (= (aget bot "user" "id") (aget msg "author" "id"))
+    (if-not (check-perms msg)
+      (check_msg msg content bot))))

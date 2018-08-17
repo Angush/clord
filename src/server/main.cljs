@@ -17,11 +17,7 @@
 
 (.on discord-client
      "message"
-     handle-command)
-
-(.on discord-client
-     "message"
-     mvf_1)
+     (partial handle-command discord-client))
 
 (.on discord-client
      "messageReactionAdd"
@@ -45,10 +41,11 @@
 
 (defn failed-login
   [err]
-  (println (str "Login failed. ERROR:\n" err "\n\nNOTE: If this is about incorrect login details, you may have set up your .env file incorrectly. Ensure the file is named '.env' exactly, and not something else like '.env.skell', or I won't be able to load properly. If that isn't the issue, ensure my .env file contains a valid token for a Discord bot app.")))
+  (println (str "Login failed. ERROR:\n" err "\n\nNOTE: If this is about incorrect login details, you may have set up your .env file incorrectly. Ensure the file is named '.env' exactly, and not something else like '.env.skell', or I won't be able to load properly. If that isn't the issue, ensure my .env file contains a valid token for a Discord bot app."))
+  (js/process.exit))
 
 (defn main! []
       (do
         (println "App loaded!")
         (let [login-promise (.login discord-client token)]
-        (.then login-promise successful-login failed-login))))
+          (.then login-promise successful-login failed-login))))
