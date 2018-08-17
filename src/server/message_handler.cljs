@@ -1,4 +1,4 @@
-(ns server.discord-handler
+(ns server.message-handler
   (:require [server.MVF_1_v2 :refer [mvf_1]]
             [server.mvf3 :refer [rapsheet]]
             [server.mvf4 :refer [punish]]
@@ -36,7 +36,7 @@
       (if (nil? command)
         (mvf_1 msg bot)
         (if (or (is-self-rapsheet msg-content) (check-perms msg))
-          ((:exec command) msg bot)
+          ((:exec command) msg)
           (incorrect-perms msg)))
       ; could add handling here to say "Commands do not work in DMs" ?
 )))

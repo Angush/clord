@@ -1,6 +1,6 @@
 (ns server.main
   (:require ["discord.js" :as discord]
-            [server.discord-handler :refer [handle-command]]
+            [server.message-handler :refer [handle-command]]
             [server.environment :refer [env-vars]]
             [server.message-flagging :refer [check-reaction]]
             [server.environment :refer [validate-env-vars]]
