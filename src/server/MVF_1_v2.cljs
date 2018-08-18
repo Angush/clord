@@ -31,6 +31,6 @@
 
   (def content (str/lower-case (aget msg "content")))
 
-  (if-not (= (aget bot "user" "id") (aget msg "author" "id"))
-    (if-not (partial check-perms msg)
+  (if-not (aget msg "author" "bot")
+    (if-not (check-perms msg nil)
       (check_msg msg content bot))))
