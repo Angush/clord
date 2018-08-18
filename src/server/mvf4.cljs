@@ -50,10 +50,10 @@
     (.setColor embed "#d10000")
     (if (nil? performed-by)
       (do 
-        (.send channel (str member " (" (aget member "displayName") ") has been __" punishment-verb "__ automatically. " reason-type) embed)
+        (.send channel (str member " (" (aget member "displayName") ") has been __" punishment-verb "__ automatically in " (aget msg-obj "channel") ". " reason-type) embed)
         (repo/update-user-rapsheet user-id punishment-type (inc (punishment-type rap-sheet))))
       (do 
-        (.send channel (str member " (" (aget member "displayName") ") has been " punishment-verb " by " performed-by ". " reason-type) embed)
+        (.send channel (str member " (" (aget member "displayName") ") has been " punishment-verb " by " performed-by " in " (aget msg-obj "channel") ". " reason-type) embed)
         (repo/update-user-rapsheet user-id punishment-type (inc (punishment-type rap-sheet)))))))
 
 (defn ban
