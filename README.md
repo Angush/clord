@@ -35,5 +35,7 @@ npm run start
 ## Running Clord
 When you run Clord using the two commands in the previous section, the bot will inform you (in the terminal) if there are any missing required environment variables, as well as providing a link to add the bot to your server, if you have not already done so.
 
+Once the bot is up and running, you can see the list of commands by posting `.help` in your server. If you have the Mod role (or you're the server owner), Clord will show you all the available commands. If someone who *doesn't* have the Mod role (and *is not* the server owner) uses the `.help` command, Clord will only show commands they have the permissions to use (ie. `.rapsheet me`).
+
 ## Credits
 The default blacklist is a heavily modified version of the list found [here](https://github.com/words/profanities). We've shortened it dramatically to fit within Discord's 2,000 characters per message limit. You may find it over-sensitive; be sure to peruse the list with `.viewterms` and delete any against which you do not want Clord to take automatic action, either by using `.removeterm` or by editing the `/src/blacklist.json` file directly.
