@@ -8,12 +8,13 @@
             [server.permissions :refer [incorrect-perms]]
             [server.punish-on-command :refer [warn-user]]
             [server.punish-on-command :refer [kick-user]]
-            [server.punish-on-command :refer [ban-user]]))
+            [server.punish-on-command :refer [ban-user]]
+            [server.punish-on-command :refer [punish-user]]))
 
 (defn help
   [msg]
   (if (check-perms msg nil)
-    (.reply msg "here are all of my commands:\n`.rapsheet me` - view your own rapsheet (list of punishments I have performed on this user)\n`.rapsheet @user` - view another user's rapsheet (requires a ping).\n`.viewterms` - view the list of blacklisted terms.\n`.addterm word` - add the given word to the blacklist.\n`.removeterm word` - remove the given word from the blacklist.\n`.warn` - manually warn a user (requires a ping; can also take a reason/message)\n`.kick` - manually kick a user (requires a ping; can also take a reason/message)\n`.ban` - manually ban a user (requires a ping; can also take a reason/message)\n\nThat's everything!")
+    (.reply msg "here are all of my commands:\n`.rapsheet me` - view your own rapsheet (list of punishments I have performed on this user)\n`.rapsheet @user` - view another user's rapsheet (requires a ping).\n`.viewterms` - view the list of blacklisted terms.\n`.addterm word` - add the given word to the blacklist.\n`.removeterm word` - remove the given word from the blacklist.\n`.warn` - manually warn a user (requires a ping; can also take a reason/message)\n`.kick` - manually kick a user (requires a ping; can also take a reason/message)\n`.ban` - manually ban a user (requires a ping; can also take a reason/message)\n`.punish` - punish the user based on their rapsheet; like automatic punishments but manually-prompted (requires a ping; can also take a reason/message)\n\nThat's everything!")
     (.reply msg "the only command of mine you're able to use is:\n`.rapsheet me` - view your own rapsheet (list of punishments I have performed on this user)")))
 
 (def commands
@@ -36,7 +37,9 @@
    {:command ".kick"
     :exec    kick-user}
    {:command ".ban"
-    :exec    ban-user}])
+    :exec    ban-user}
+   {:command ".punish"
+    :exec    punish-user}])
 
 (defn find-command
   ([content]

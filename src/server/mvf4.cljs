@@ -39,7 +39,7 @@
         (recur (inc level) rap-sheet config))))))
 
 (defn punishment-success
-  [msg-obj, member, punishment-verb, reason, performed-by]
+  [msg-obj, member, punishment-verb, reason, performed-by, mod-prompted-auto-punishment]
   (let [user-id (aget member "id")
         rap-sheet (get-user-rapsheet user-id)
         punishment-type (cond (= punishment-verb "warned") :warning (= punishment-verb "kicked") :kick (= punishment-verb "permanently banned") :perm-ban)
@@ -53,27 +53,29 @@
         (.send channel (str member " (" (aget member "displayName") ") has been __" punishment-verb "__ automatically in " (aget msg-obj "channel") ". " reason-type) embed)
         (repo/update-user-rapsheet user-id punishment-type (inc (punishment-type rap-sheet))))
       (do 
-        (.send channel (str member " (" (aget member "displayName") ") has been " punishment-verb " by " performed-by " in " (aget msg-obj "channel") ". " reason-type) embed)
+        (if mod-prompted-auto-punishment
+          (.send channel (str member " (" (aget member "displayName") ") has been automatically __" punishment-verb "__ by " performed-by "'s command in " (aget msg-obj "channel") ". " reason-type) embed)
+          (.send channel (str member " (" (aget member "displayName") ") has been __" punishment-verb "__ by " performed-by " in " (aget msg-obj "channel") ". " reason-type) embed))
         (repo/update-user-rapsheet user-id punishment-type (inc (punishment-type rap-sheet)))))))
 
 (defn ban
-  [msg-obj, member, reason, performed-by]
-  (let [promise (.ban member (str "Automated punishment. " reason))]
-    (.then promise (partial punishment-success msg-obj member "permanently banned" reason performed-by))))
+  [msg-obj, member, reason, performed-by, mod-prompted-auto-punishment]
+  (let [promise (.ban member (if (nil? performed-by) (str "Manually punished by " (aget performed-by "user" "tag") ". " reason) (str "Automated punishment. " reason)))]
+    (.then promise (partial punishment-success msg-obj member "permanently banned" reason performed-by mod-prompted-auto-punishment))))
 
 (defn kick
-  [msg-obj, member, reason, performed-by]
-  (let [promise (.kick member (str "Automated punishment. " reason))]
-    (.then promise (partial punishment-success msg-obj member "kicked" reason performed-by))))
+  [msg-obj, member, reason, performed-by, mod-prompted-auto-punishment]
+  (let [promise (.kick member (if (nil? performed-by) (str "Manually punished by " (aget performed-by "user" "tag") ". " reason) (str "Automated punishment. " reason)))]
+    (.then promise (partial punishment-success msg-obj member "kicked" reason performed-by mod-prompted-auto-punishment))))
 
 (defn warn
-  [msg-obj, member, reason, performed-by]
+  [msg-obj, member, reason, performed-by, mod-prompted-auto-punishment]
   (let [channel (aget msg-obj "channel")]
     (if (nil? performed-by)
       (let [promise (.send channel (str "Wash your mouth out with soap, " member "! We don't use that kind of language here. This is an automated warning, because you " (.toLowerCase reason)))]
-        (.then promise (partial punishment-success msg-obj member "warned" reason performed-by)))
-      (let [promise (.send channel (str "This is a warning - " reason))]
-        (.then promise (partial punishment-success msg-obj member "warned" reason performed-by))))))
+        (.then promise (partial punishment-success msg-obj member "warned" reason performed-by mod-prompted-auto-punishment)))
+      (let [promise (.send channel (str member " - **this is a warning** - " reason))]
+        (.then promise (partial punishment-success msg-obj member "warned" reason performed-by mod-prompted-auto-punishment))))))
 
 (def punishments
   {
@@ -83,10 +85,16 @@
    })
 
 (defn punish
-  [msg-obj, reason]
-  (let [user-id (aget msg-obj "author" "id")
-        rap-sheet (get-user-rapsheet user-id)
-        punishment-k (find-punishment rap-sheet punishment-config)
-        punishment (get punishments punishment-k)
-        member (aget msg-obj "member")]
-    (punishment msg-obj member reason nil)))
+  ([msg-obj, reason]
+    (let [user-id (aget msg-obj "author" "id")
+          rap-sheet (get-user-rapsheet user-id)
+          punishment-k (find-punishment rap-sheet punishment-config)
+          punishment (get punishments punishment-k)
+          member (aget msg-obj "member")]
+      (punishment msg-obj member reason nil false)))
+  ([msg-obj, member, reason, performed-by]
+    (let [user-id (aget member "id")
+          rap-sheet (get-user-rapsheet user-id)
+          punishment-k (find-punishment rap-sheet punishment-config)
+          punishment (get punishments punishment-k)]
+      (punishment msg-obj member reason performed-by true))))

@@ -4,15 +4,18 @@
 
 (defn replace-ping
   [content, matcher, name]
-  (let [result (.replace content #(str matcher name) )
-        finished-replacing (.match content #(str matcher))]
+  (let [result (.replace content (re-pattern matcher) name)
+        finished-replacing (.match content (re-pattern matcher))]
     (if (nil? finished-replacing)
       result
       (recur result matcher name))))
 
 (defn format-reason 
   [msg, user, start-index]
-  (let [result (.trim (replace-ping (.substring (aget msg "content") start-index) (str #"\s*<@!{0,1}" (aget user "id") #">\s*") (aget user "displayName")))]
+  (let [id (aget user "id")
+        content (.trim (.substring (aget msg "content") start-index))
+        string (.substring content (.indexOf content " "))
+        result (.trim (replace-ping string (str "<@!*" id ">") (aget user "displayName")))]
     (if-not (zero? (aget result "length"))
       result
       "[No reason specified.]")))
@@ -21,7 +24,7 @@
   [msg]
   (let [mentions (aget msg "mentions")
         members (aget mentions "members")]
-    (if (= (aget members "size") 1)
+    (if-not (zero? (aget members "size"))
       (.first members))))
 
 (defn user-can-be-punished
@@ -36,25 +39,34 @@
   [msg]
   (let [user (get-user-to-punish msg)]
     (if (nil? user)
-      (.reply msg " you need to mention one (and only one) user for me to warn!")
+      (.reply msg "you need to mention one (and only one) user for me to warn!")
       (if (user-can-be-punished msg user)
-        (punish/warn msg user (format-reason msg user 5) (aget msg "member"))
+        (punish/warn msg user (format-reason msg user 5) (aget msg "member") false)
         (.reply msg (str "I cannot warn "(aget user "displayName") ", as they are either (a) a bot, or (b) have Mod permissions."))))))
 
 (defn kick-user
   [msg]
   (let [user (get-user-to-punish msg)]
     (if (nil? user)
-      (.reply msg " you need to mention one (and only one) user for me to kick!")
+      (.reply msg "you need to mention one (and only one) user for me to kick!")
       (if (user-can-be-punished msg user)
-        (punish/kick msg user (format-reason msg user 5) (aget msg "member"))
+        (punish/kick msg user (format-reason msg user 5) (aget msg "member") false)
         (.reply msg (str "I cannot kick " (aget user "displayName") ", as they are either (a) a bot, or (b) have Mod permissions."))))))
 
 (defn ban-user
   [msg]
   (let [user (get-user-to-punish msg)]
     (if (nil? user)
-      (.reply msg " you need to mention one (and only one) user for me to ban!")
+      (.reply msg "you need to mention one (and only one) user for me to ban!")
       (if (user-can-be-punished msg user)
-        (punish/ban msg user (format-reason msg user 4) (aget msg "member"))
-        (.reply msg (str " I cannot ban " (aget user "displayName") ", as they are either (a) a bot, or (b) have Mod permissions."))))))
+        (punish/ban msg user (format-reason msg user 4) (aget msg "member") false)
+        (.reply msg (str "I cannot ban " (aget user "displayName") ", as they are either (a) a bot, or (b) have Mod permissions."))))))
+
+(defn punish-user
+  [msg]
+  (let [user (get-user-to-punish msg)]
+    (if (nil? user)
+      (.reply msg "you need to mention one (and only one) user for me to punish!")
+      (if (user-can-be-punished msg user)
+        (punish/punish msg user (format-reason msg user 7) (aget msg "member"))
+        (.reply msg (str "I cannot punish " (aget user "displayName") ", as they are either (a) a bot, or (b) have Mod permissions."))))))
