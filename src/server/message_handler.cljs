@@ -11,7 +11,10 @@
             [server.punish-on-command :refer [ban-user]]))
 
 (def commands
-  [{:command ".rapsheet"
+  [{:command ".rapsheet me"
+    :exec    rapsheet
+    :modonly false}
+   {:command ".rapsheet"
     :exec    rapsheet}
    {:command ".addterm"
     :exec    add_term}
@@ -27,34 +30,37 @@
     :exec    ban-user}])
 
 (defn find-command
-  [str]
-  (->>
-   (filter #(= (:command %) (.toLowerCase (first (.split str " ")))) commands)
-   first))
+  ([content]
+    (find-command content 0))
+  ([content, index]
+    (let [cmd (get commands index)]
+      (if-not (nil? cmd)
+        (if (.startsWith content (:command cmd))
+          cmd
+          (recur content (inc index)))))))
 
-(defn is-self-rapsheet
-  "Returns whether command is '.rapsheet me' to bypass permission check."
-  [msg-content]
-  (let [split-content (.split (.toLowerCase msg-content) " ")]
-    (if (= (alength split-content) 2)
-      (if (and (= (get split-content 0) ".rapsheet") (= (get split-content 1) "me"))
-        true
-        false)
+(defn is-modonly
+  [cmd]
+  (let [modonly (:modonly cmd)]
+    (if (or (nil? modonly) (true? modonly))
+      true
       false)))
 
 (defn handle-command
   "This function checks the message and when it matches a
   command it executes a function provided"
   [bot, msg]
-  (let [msg-content (aget msg "content")
+  (let [msg-content (.toLowerCase (aget msg "content"))
         command (find-command msg-content)
         channel (aget msg "channel")
         channel-type (aget channel "type")]
     (if (= channel-type "text")
       (if (nil? command)
         (mvf_1 msg bot)
-        (if (or (is-self-rapsheet msg-content) (partial check-perms msg))
+        (if-not (is-modonly command)
           ((:exec command) msg)
-          (incorrect-perms msg)))
+          (if (check-perms msg nil)
+            ((:exec command) msg)
+            (incorrect-perms msg))))
       ; could add handling here to say "Commands do not work in DMs" ?
 )))

@@ -10,11 +10,11 @@
         member-id (aget member "id")
         member-roles (aget member "roles")
         member-has-mod-role (.has member-roles mod-role-id)]
-    (if (or (true? member-has-mod-role) (= guild-owner-id member-id))
+    (if (or member-has-mod-role (= guild-owner-id member-id))
       true
       false)))
 
 (defn incorrect-perms
   "Informs user they do not have the requisite permissions to use the given command."
   [msg]
-  (.reply msg "only people with the mod role can use this command."))
+  (.reply msg "only people with the Mod role can use this command."))
