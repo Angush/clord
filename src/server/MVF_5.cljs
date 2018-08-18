@@ -36,7 +36,7 @@
         (.reply msg "that word is already blacklisted.")))
 
     ; Send error if not properly formatted
-    (.reply msg "icorrect command format. Command should be `.addterm <term>`")))
+    (.reply msg "incorrect command format. Command should be `.addterm <term>`")))
 
 (defn remove_term
   "When called with '.removeterm <term>' this function will remove the given <term>
