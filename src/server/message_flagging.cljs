@@ -1,6 +1,27 @@
 (ns server.message-flagging
   (:require [server.environment :refer [env-vars]]))
 
+(defn create-url-list
+  [attachments, array, index]
+  (let [attachment (get attachments index)]
+    (if (nil? attachment)
+      array
+      (let [url (aget attachment "url")] 
+        (.push array url)
+        (recur attachments array (inc index))))))
+
+(defn attachments-handler
+  "Creates embed with attachments field (if applicable)."
+  [discord, msg]
+  (let [embed (new discord/RichEmbed)
+        msg-attachments (aget msg "attachments")
+        attachment-count (aget msg-attachments "size")]
+    (if (zero? attachment-count)
+      embed
+      (do
+        (let [urls (create-url-list (.array msg-attachments) (clj->js []) 0)]
+          (.addField embed "ATTACHMENTS" (clojure.string/join "\n" urls)))))))
+
 (defn post-message 
   "Creates and posts the alert to Moderators."
   [discord, bot, msg, user]
@@ -9,7 +30,7 @@
         channel-id (get env-vars "LOG_CHANNEL_ID")]
     (if (.has guild-channels channel-id) (do
       (let [channel (.get guild-channels channel-id)
-            embed (new discord/RichEmbed)
+            embed (attachments-handler discord msg)
             attachments (aget msg "attachments")
             member (aget msg "member")
             msg-content (aget msg "content")
