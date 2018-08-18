@@ -36,7 +36,7 @@
         (.reply msg "that word is already blacklisted.")))
 
     ; Send error if not properly formatted
-    (.reply msg "Incorrect command format. Command should be '.addterm <term>'")))
+    (.reply msg "icorrect command format. Command should be `.addterm <term>`")))
 
 (defn remove_term
   "When called with '.removeterm <term>' this function will remove the given <term>
@@ -69,14 +69,14 @@
         (.reply msg "that word is not currently blacklisted.")))
 
     ; Send error if not properly formatted
-    (.reply msg "Incorrect command format. Command should be '.removeterm <term>'")))
+    (.reply msg "incorrect command format. Command should be `.removeterm <term>`")))
 
 (defn view_terms
   "Sends a message containing the blacklist as a reply to .viewterms"
   [msg]
 
   ; Load blacklist
-  (def blacklist_c (sort(into #{} (repo/read_blacklist))))
+  (def blacklist_c (clojure.string/join ", " (sort (repo/read_blacklist))))
 
   ; Send reply containing blacklist
-  (.reply msg (gstring/format "Here is the blacklist: ```%s```" blacklist_c)))
+  (.reply msg (gstring/format "the current blacklist is: ```css\n%s```" blacklist_c)))
