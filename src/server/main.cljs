@@ -23,6 +23,10 @@
      "messageReactionAdd"
      (partial check-reaction discord discord-client))
 
+(.on discord-client
+     "error"
+     (partial println (str "Discord API error occurred. ")))
+
 ; App lifecycle events
 (defn reload! []
       (do
