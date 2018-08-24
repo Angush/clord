@@ -25,7 +25,8 @@
     :exec    rapsheet
     :modonly false}
    {:command ".rapsheet"
-    :exec    rapsheet}
+    :exec    rapsheet
+    :errtext "However, you can type `.rapsheet me` to view your *own* rapsheet."}
    {:command ".addterm"
     :exec    add_term}
    {:command ".removeterm"
@@ -73,6 +74,9 @@
           ((:exec command) msg)
           (if (check-perms msg nil)
             ((:exec command) msg)
-            (incorrect-perms msg))))
+            (let [errtext (:errtext command)]
+              (if (nil? errtext)
+                (incorrect-perms msg)
+                (incorrect-perms msg errtext))))))
       ; could add handling here to say "Commands do not work in DMs" ?
 )))
