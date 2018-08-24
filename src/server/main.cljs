@@ -1,6 +1,6 @@
 (ns server.main
   (:require ["discord.js" :as discord]
-            [server.discord-handler :refer [handle-command]]
+            [server.message-handler :refer [handle-command]]
             [server.environment :refer [env-vars]]
             [server.message-flagging :refer [check-reaction]]
             [server.environment :refer [validate-env-vars]]
@@ -38,7 +38,8 @@
         valid (validate-env-vars discord-client user)]
     (if (true? valid)
       (let [tag (aget user "tag")]
-        (println (str "Everything looks OK! Initialized as " tag ".")))
+        (println (str "Everything looks OK! Initialized as " tag "."))
+        (.setPresence user (clj->js {:game {:name "type '.help'"}})))
       (do
         (println "Fix this and run me again. Shutting down...")
         (js/process.exit)))))

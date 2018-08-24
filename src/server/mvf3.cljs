@@ -11,7 +11,7 @@
         msg_author_id (.-id msg_author)
         msg_cmd (first (.split (.-content msg) " "))
         msg_content (clojure.string/join " " (rest (.split (.-content msg) " ")))
-        msg_content_id (clojure.string/join "" (rest (rest (reverse (rest (reverse msg_content))))))
+        msg_content_id (let [x (rest (rest (reverse (rest (reverse msg_content)))))] (clojure.string/join ""(if (= "!" (first x)) (rest x) x)))
         msg_user #(.get users msg_content_id)
         msg_user_id #(.-id (msg_user))
         msg_user_rapsheet #(get rapsheets %)
