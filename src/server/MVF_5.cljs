@@ -78,5 +78,7 @@
   ; Load blacklist
   (def blacklist_c (clojure.string/join ", " (sort (repo/read_blacklist))))
 
-  ; Send reply containing blacklist
-  (.reply msg (gstring/format "the current blacklist is: ```css\n%s```" blacklist_c)))
+  ; Send reply containing blacklist, or indicate that it is empty
+  (if (zero? (aget blacklist_c "length"))
+    (.reply msg "the current blacklist is empty.")
+    (.reply msg (gstring/format "the current blacklist is: ```css\n%s```" blacklist_c))))
