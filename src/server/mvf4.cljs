@@ -60,12 +60,12 @@
 
 (defn ban
   [msg-obj, member, reason, performed-by, mod-prompted-auto-punishment]
-  (let [promise (.ban member (if (nil? performed-by) (str "Manually punished by " (aget performed-by "user" "tag") ". " reason) (str "Automated punishment. " reason)))]
+  (let [promise (.ban member (if-not (nil? performed-by) (str "Manually punished by " (aget performed-by "user" "tag") ". " reason) (str "Automated punishment. " reason)))]
     (.then promise (partial punishment-success msg-obj member "permanently banned" reason performed-by mod-prompted-auto-punishment))))
 
 (defn kick
   [msg-obj, member, reason, performed-by, mod-prompted-auto-punishment]
-  (let [promise (.kick member (if (nil? performed-by) (str "Manually punished by " (aget performed-by "user" "tag") ". " reason) (str "Automated punishment. " reason)))]
+  (let [promise (.kick member (if-not (nil? performed-by) (str "Manually punished by " (aget performed-by "user" "tag") ". " reason) (str "Automated punishment. " reason)))]
     (.then promise (partial punishment-success msg-obj member "kicked" reason performed-by mod-prompted-auto-punishment))))
 
 (defn warn
